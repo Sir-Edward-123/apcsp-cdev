@@ -101,18 +101,23 @@ void loadStudents(int key)
     char fullStr[600];
     char firstName[256];
     char lastName[256];
+    char ageBeforeDecrypt[32];
+    char idBeforeDecrypt[32];
     int age;
     long int id;
 
-    if(fscanf(studentDataF, "%s %s %d %ld\n", firstName, lastName, &age, &id) == 4)
+    if(fscanf(studentDataF, "%s %s %s %s\n", firstName, lastName, ageBeforeDecrypt, idBeforeDecrypt) == 4)
     {
-      sprintf(fullStr, "%s %s %d %ld", firstName, lastName, age, id);
+      sprintf(fullStr, "%s %s %s %s", firstName, lastName, ageBeforeDecrypt, idBeforeDecrypt);
       caesarDecrypt(fullStr, key);
-      sscanf(fullStr, "%s %s %d %ld", firstName, lastName, &age, &id);
+      if(sscanf(fullStr, "%s %s %d %ld", firstName, lastName, &age, &id) != 4)
+        printf("There was a problem formatting a student, and numerical values may not match what is on file. Check encryption/decryption key.\n");
       createStudent(firstName, lastName, age, id);
     }
     else
+    {
       break;
+    }
   }
   fclose(studentDataF);
   printf("loaded %d students\n", numStudents);
